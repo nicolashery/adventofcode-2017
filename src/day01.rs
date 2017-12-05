@@ -1,5 +1,15 @@
-pub fn captcha(input: &str) -> u32 {
-  sum_captcha(parse_input(input), 1)
+pub enum Mode {
+  NextDigit,
+  HalfwayAround,
+}
+
+pub fn captcha(input: &str, mode: Mode) -> u32 {
+  let digits = parse_input(input);
+  let step = match mode {
+    Mode::NextDigit => 1,
+    Mode::HalfwayAround => half_len(&digits),
+  };
+  sum_captcha(digits, step)
 }
 
 fn parse_input(input: &str) -> Vec<u32> {
@@ -24,4 +34,13 @@ fn sum_captcha(digits: Vec<u32>, step: usize) -> u32 {
         })
         .map(|(_, n)| n)
         .sum()
+}
+
+fn half_len(digits: &Vec<u32>) -> usize {
+  let len = digits.len();
+  if len % 2 != 0 {
+    panic!("Expected list of length {} to contain an even number of elements", len);
+  }
+
+  len / 2
 }
