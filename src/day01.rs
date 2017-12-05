@@ -1,5 +1,5 @@
 pub fn captcha(input: &str) -> u32 {
-  sum_captcha(parse_input(input))
+  sum_captcha(parse_input(input), 1)
 }
 
 fn parse_input(input: &str) -> Vec<u32> {
@@ -10,18 +10,17 @@ fn parse_input(input: &str) -> Vec<u32> {
     .collect()
 }
 
-fn sum_captcha(digits: Vec<u32>) -> u32 {
+fn sum_captcha(digits: Vec<u32>, step: usize) -> u32 {
     let len = digits.len();
     if len == 0 {
         return 0;
     }
 
-    let first = digits[0];
     digits.iter()
         .enumerate()
         .filter(|&(i, n)| {
-            let next = if i == len - 1 { first } else { digits[i+1] };
-            *n == next
+            let next_i = (i + step) % len;
+            *n == digits[next_i]
         })
         .map(|(_, n)| n)
         .sum()
