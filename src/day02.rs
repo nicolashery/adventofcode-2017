@@ -1,14 +1,21 @@
 type Row = Vec<u32>;
 type Sheet = Vec<Row>;
 
-pub fn checksum(input: &str) -> u32 {
+pub enum Mode {
+    MinMaxDiff,
+    EvenlyDivisible,
+}
+
+pub fn checksum(input: &str, mode: Mode) -> u32 {
     let sheet = parse_input(input);
 
     sheet.iter().fold(0, |result, row| {
-        let max = get_max(row);
-        let min = get_min(row);
-        let diff = max - min;
-        result + diff
+        let row_result: u32 = match mode {
+            Mode::MinMaxDiff => get_min_max_diff(row),
+            Mode::EvenlyDivisible => get_evenly_divisible(row),
+        };
+
+        result + row_result
     })
 }
 
@@ -27,6 +34,34 @@ fn parse_input(input: &str) -> Sheet {
         .collect();
 
     v
+}
+
+fn get_min_max_diff(row: &Row) -> u32 {
+    let max = get_max(row);
+    let min = get_min(row);
+
+    max - min
+}
+
+fn get_evenly_divisible(row: &Row) -> u32 {
+    let len = row.len();
+
+    for (i, &n) in row.iter().enumerate() {
+        if i == len - 1 {
+            break;
+        }
+
+        for &m in &row[i + 1..] {
+            if n % m == 0 {
+                return n / m;
+            }
+            if m % n == 0 {
+                return m / n;
+            }
+        }
+    }
+
+    panic!("Could not find evenly divisible numbers in row");
 }
 
 fn get_max(row: &Row) -> &u32 {

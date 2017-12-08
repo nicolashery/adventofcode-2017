@@ -22,7 +22,14 @@ fn main() {
 
     println!("==================== Day 02 ====================");
     let day02_input = read_input("data/day02.txt");
-    println!("{}", day02::checksum(&day02_input));
+    println!(
+        "Part One: {}",
+        day02::checksum(&day02_input, day02::Mode::MinMaxDiff)
+    );
+    println!(
+        "Part Two: {}",
+        day02::checksum(&day02_input, day02::Mode::EvenlyDivisible)
+    );
     println!("");
     println!("");
 }
